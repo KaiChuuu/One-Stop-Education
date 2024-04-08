@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: faqservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: faqservice
+  template:
+    metadata:
+      labels:
+        app: faqservice
+    spec:
+      containers:
+        - name: faqservice
+          image: us-west1-docker.pkg.dev/cmpt474-413923/microservices/faqservice@sha256:77a9c050ed5102d4a8509f96eff18442539848128969eca8aab76995de0a3189
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/mycredentials.json
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /faqservice
+              port: 80
+              scheme: HTTP
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: google-application-credentials

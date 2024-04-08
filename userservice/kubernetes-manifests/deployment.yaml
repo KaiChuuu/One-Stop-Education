@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: userservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: userservice
+  template:
+    metadata:
+      labels:
+        app: userservice
+    spec:
+      containers:
+        - name: userservice
+          image: us-west1-docker.pkg.dev/cmpt474-413923/microservices/userservice@sha256:c711206c5d7650a4d2cb78cf1c5db7c922c2f329a0bfe403156f5cd9c368f356
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/mycredentials.json
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /userservice
+              port: 80
+              scheme: HTTP
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: google-application-credentials

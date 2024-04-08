@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: courseservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: courseservice
+  template:
+    metadata:
+      labels:
+        app: courseservice
+    spec:
+      containers:
+        - name: courseservice
+          image: us-west1-docker.pkg.dev/cmpt474-413923/microservices/courseservice@sha256:ebb365b3ebf6d6eb7a156bf50e627ccf7202df44b02ed11a68741f17f0dd20fc
+          volumeMounts:
+            - name: google-cloud-key
+              mountPath: /var/secrets/google
+          env:
+            - name: GOOGLE_APPLICATION_CREDENTIALS
+              value: /var/secrets/google/mycredentials.json
+          ports:
+            - containerPort: 80
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /courseservice
+              port: 80
+              scheme: HTTP
+      volumes:
+        - name: google-cloud-key
+          secret:
+            secretName: google-application-credentials
