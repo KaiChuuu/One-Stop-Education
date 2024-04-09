@@ -53,21 +53,20 @@ app.get('/userservice/homeinformation/:userId', cors(corsOptions), async (req, r
         );
 
         const [entities] = await datastore.runQuery(query);
-
-        const [topicNames] = entities['currentTopics'];
-        console.log("response: " + topicNames);
+        var topics = entities[0]['currentTopics'];
+        
         var response = [];
-        for(const entity of topicNames){
+        for(var i=0; i<topics.length; i++){
+
             var newstore = new Datastore();
-            console.log("entity: " + entity);
             var search = newstore
             .createQuery('topic')
             .filter(
-                new PropertyFilter('topicTitle', '=', entity)
+                new PropertyFilter('topicTitle', '=', topics[i])
             );
-
+                
             var [result] = await newstore.runQuery(search);
-            console.log("response2: " + result);
+                
             var group = {};
             group["topicTitle"] = result[0]['topicTitle'];
             group["topicGrade"] = result[0]['gradeId'];
