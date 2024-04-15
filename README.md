@@ -32,6 +32,7 @@ Kubernetes cluster.
 
 Additional cached data was stored through Cloud Storage in buckets or on user-side clients.
 
+----------------------------------------------
 
 ### Steps to update services
 
@@ -55,6 +56,6 @@ update image being uploaded in deployment.yaml file with image uploaded in step 
 
 kubectl apply -f ./kubernetes-manifests/deployment.yaml
 
-# Step 4 : Update Ingress
+#### Step 4 : Update Ingress
 
 kubectl apply -f ./kubernetes-manifests/ingress.yaml
